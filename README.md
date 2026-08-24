@@ -9,6 +9,8 @@ Still to do:
 - [ ] add content search
 - [ ] read images in Markdown
 
+Launch it here: [`https://aadm.github.io/nvAppnt/`](`https://aadm.github.io/nvAppnt/`)
+
 ## Table of Contents
 
 - [Features](#features)
@@ -106,14 +108,34 @@ Still to do:
 
 ### 2. Deploy to GitHub Pages
 
-1. Create a new repository on GitHub (e.g., `notes-viewer`)
+1. Create a new repository on GitHub (e.g., `nvAppnt`)
 2. Push these files to it
 3. Go to Settings > Pages
 4. Set Source to "Deploy from a branch"
 5. Select branch: `main`, folder: `/ (root)`
 6. Save
 
-Your app will be at: `https://yourusername.github.io/notes-viewer/`
+The app will be at: `https://aadm.github.io/nvAppnt/`
+
+Or:
+
+```bash
+gh auth login
+
+# Create repo and push in one go
+cd ~/nvAppnt
+git init
+git add .
+git commit -m "nvAppnt initial commit"
+gh repo create nvAppnt --public --source=. --push
+```
+
+Then enable GitHub Pages:
+
+```bash
+gh api repos/aadm/notes-viewer/pages -X PUT -f build_type=legacy -f source.branch=main -f source.path=/
+```
+
 
 ### 3. Run Locally (for development)
 
@@ -201,22 +223,4 @@ notes-viewer/
   README.md       # This file
 ```
 
-## Customization
 
-### Changing the Info Text
-
-Edit the `showInfo()` function in `index.html`. Search for:
-
-```javascript
-function showInfo() {
-```
-
-The HTML inside the modal template can be modified directly.
-
-### Changing Default Repository
-
-Pre-fill the login form by setting values in the DOM or modifying the `handleLogin()` function.
-
-### Adding Features
-
-The app is intentionally minimal. If you need additional features, the single-file architecture makes it straightforward to modify.

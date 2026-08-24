@@ -1,6 +1,6 @@
 {
-  "name": "Notes Viewer",
-  "short_name": "Notes",
+  "name": "nvAppnt",
+  "short_name": "nvAppnt",
   "description": "Browse and search your GitHub notes",
   "start_url": "/",
   "display": "standalone",
