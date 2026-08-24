@@ -2,6 +2,14 @@
 
 A minimal, mobile-first [PWA](https://en.wikipedia.org/wiki/Progressive_web_app) for browsing and searching markdown notes stored in a GitHub repository.
 
+Barebones mobile-friendly web app for browsing and editing text notes stored in a GitHub repository.
+
+Inspired by nvAlt and the lack of open-source alternatives, coded by aadm with MiMo V2.5 Free in OpenCode.
+
+Still to do:
+
+- [ ] add content search
+
 ## Table of Contents
 
 - [Features](#features)
