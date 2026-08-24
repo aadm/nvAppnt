@@ -4,11 +4,6 @@ Barebones mobile-friendly web app (or [PWA](https://en.wikipedia.org/wiki/Progre
 
 Inspired by nvAlt and the lack of open-source alternatives, coded by aadm with MiMo V2.5 Free in OpenCode.
 
-Still to do:
-
-- [ ] add content search
-- [ ] read images in Markdown
-
 Launch it here: [`https://aadm.github.io/nvAppnt/`](`https://aadm.github.io/nvAppnt/`)
 
 ## Table of Contents
@@ -25,8 +20,8 @@ Launch it here: [`https://aadm.github.io/nvAppnt/`](`https://aadm.github.io/nvAp
 
 - File browsing with folder navigation
 - Filename search (instant, client-side filtering)
-- Content search (GitHub code search API)
-- Markdown rendering with image support (relative paths resolved to raw GitHub URLs)
+- Content search (searches inside note text, indexed client-side via Git blobs API)
+- Markdown rendering with image support (works with private repos via authenticated Git Blobs API)
 - Basic editor with save (creates Git commits via GitHub API)
 - Light/dark theme toggle
 - Sort files by name, size, or last updated
@@ -192,15 +187,41 @@ The token persists across sessions. You only need to enter it once. If you clear
 | Get file content    | `GET /repos/{owner}/{repo}/contents/{path}`        | Returns base64 content         |
 | Save file           | `PUT /repos/{owner}/{repo}/contents/{path}`        | Creates a commit               |
 | Get commit history  | `GET /repos/{owner}/{repo}/commits?per_page=100`   | For "Updated" column           |
-| Search code         | `GET /search/code?q={query}+repo:{owner}/{repo}`  | Requires `repo` scope          |
+| Get blob content    | `GET /repos/{owner}/{repo}/git/blobs/{sha}`        | Used for content search indexing |
+
+### Content Search
+
+Content search does not use GitHub's `/search/code` endpoint (its index lags for private
+repos and returned inconsistent results). Instead, the app fetches the raw content of every
+`.md`/`.markdown`/`.txt` file via the Git Blobs API and searches client-side.
+
+- Content is cached in memory keyed by blob **sha**, so it stays valid across tree refreshes
+  and only re-fetches files whose content actually changed.
+- The first content search after opening the app triggers an indexing pass (parallel fetches,
+  8 at a time); a progress indicator shows while this runs. Subsequent searches are instant.
+- Matches show a highlighted snippet of surrounding text.
+- The cache is cleared on logout.
+
 
 ### Image Resolution
 
-Images in markdown use relative paths (e.g., `img/photo.png`). The app resolves these to raw GitHub URLs:
+Images in markdown use relative paths (e.g., `img/photo.png`). Since notes are usually kept in a
+**private** repo, a plain `<img src="https://raw.githubusercontent.com/...">` does not work: that's
+an unauthenticated browser request, and GitHub's raw content CDN returns 404 for private repos
+regardless of whether the file actually exists.
 
-```
-https://raw.githubusercontent.com/{owner}/{repo}/{branch}/{dir}/{image-path}
-```
+Instead, relative image paths are resolved against the file's directory to a repo-relative path,
+looked up in the already-loaded Git tree to find the blob sha, then fetched through the
+authenticated **Git Blobs API** (`GET /repos/{owner}/{repo}/git/blobs/{sha}`) and converted to a
+`blob:` object URL:
+
+1. Renderer emits `<img data-gh-path="{repo-relative-path}" class="img-loading">` as a placeholder.
+2. After the HTML is inserted into the DOM, `resolveGithubImages()` scans for these placeholders,
+   fetches each blob's base64 content, decodes it into a `Blob`, and swaps in an object URL.
+3. Object URLs are cached in memory keyed by blob sha and revoked on logout.
+
+Absolute `http(s)://` and `data:` image URLs are left untouched and rendered directly (no auth
+needed for external images).
 
 ### State Management
 
@@ -211,6 +232,8 @@ All state is in a single `state` object. Key fields:
 - `showDotfiles` / `showDirs` - filter toggles persisted to localStorage
 - `hidePrefix` - hides numerical filename prefixes (e.g., `202608051608_`) for cleaner display
 - `hideMetadata` - hides Size and Updated columns for compact view on small screens
+- `searchMode` - `filename` or `content`, toggled via the search box button
+- `contentCache` - map of blob sha to decoded file content, used for content search indexing
 
 ## File Structure
 

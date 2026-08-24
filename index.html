@@ -103,8 +103,12 @@
     .header h1 {
       font-size: 16px;
       font-weight: 600;
-      flex-shrink: 0;
       letter-spacing: -0.02em;
+      flex: 1 1 auto;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .back-btn {
@@ -116,12 +120,14 @@
       line-height: 1;
       display: flex;
       align-items: center;
+      flex-shrink: 0;
     }
 
     .header-actions {
       margin-left: auto;
       display: flex;
       gap: 6px;
+      flex-shrink: 0;
     }
 
     .icon-btn {
@@ -195,6 +201,35 @@
 
     .search-clear:hover { color: var(--text); background: var(--bg-tertiary); }
     .search-clear .material-symbols-outlined { font-size: 18px; }
+
+    .search-mode-toggle {
+      flex-shrink: 0;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0 12px;
+      color: var(--text-secondary);
+      font-size: 11px;
+      font-family: var(--font-sans);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+
+    .search-mode-toggle.active {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-glow);
+    }
+
+    .search-progress {
+      padding: 4px 16px 0;
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
 
     /* Toolbar filters */
     .toolbar-row {
@@ -350,6 +385,22 @@
 
     .file-row.dir .col-name { color: var(--accent); }
 
+    .search-match {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .search-match mark {
+      background: var(--accent-glow);
+      color: var(--accent);
+      border-radius: 3px;
+      padding: 0 2px;
+    }
+
     .file-row .col-size {
       width: 80px;
       text-align: right;
@@ -417,12 +468,15 @@
       margin: 8px 0;
       display: block;
     }
-    .content imgbroken {
-      display: block;
+    .content img.img-loading {
+      min-height: 80px;
+      background: var(--bg-tertiary);
+      border-style: dashed;
+    }
+    .content img.img-broken {
+      min-height: 48px;
       padding: 12px 16px;
-      border: 1px dashed var(--border);
-      border-radius: var(--radius);
-      margin: 8px 0;
+      border-style: dashed;
       color: var(--text-secondary);
       font-size: 13px;
       font-style: italic;
@@ -747,7 +801,9 @@
               <span class="material-symbols-outlined">close</span>
             </button>
           </div>
+          <button class="search-mode-toggle" id="search-mode-btn" onclick="toggleSearchMode()">filename</button>
         </div>
+        <div id="search-progress" class="search-progress hidden"></div>
       </div>
     </div>
     <div class="toolbar-row" id="filter-toolbar">
@@ -775,7 +831,7 @@
         <button class="back-btn" onclick="showBrowse()">
           <span class="material-symbols-outlined">arrow_back</span>
         </button>
-        <h1 id="view-title" style="font-size:14px; word-break:break-all;"></h1>
+        <h1 id="view-title" ></h1>
         <div class="header-actions">
           <button class="icon-btn" onclick="toggleTheme()" title="Toggle theme" id="theme-btn-view">
             <span class="material-symbols-outlined">dark_mode</span>
@@ -799,7 +855,7 @@
         <button class="back-btn" onclick="cancelEdit()">
           <span class="material-symbols-outlined">arrow_back</span>
         </button>
-        <h1 id="edit-title" style="font-size:14px; word-break:break-all;"></h1>
+        <h1 id="edit-title" ></h1>
         <div class="header-actions">
           <button class="icon-btn" onclick="toggleTheme()" title="Toggle theme" id="theme-btn-edit">
             <span class="material-symbols-outlined">dark_mode</span>
@@ -835,6 +891,9 @@
       currentSha: '',
       currentContent: '',
       searchQuery: '',
+      searchMode: 'filename',
+      contentCache: {},
+      contentIndexing: false,
       sortBy: 'name',
       sortDir: 'asc',
       commitDates: {},
@@ -944,7 +1003,8 @@
     function handleLogout() {
       if (!confirm('Disconnect from GitHub?')) return;
       localStorage.removeItem('notes-viewer-state');
-      state = { ...state, token: '', owner: '', repo: '', tree: [], browsePath: '', currentPath: '' };
+      clearImageBlobCache();
+      state = { ...state, token: '', owner: '', repo: '', tree: [], browsePath: '', currentPath: '', contentCache: {} };
       showView('login-view');
     }
 
@@ -973,8 +1033,7 @@
           <p>Barebones mobile-friendly web app for browsing and editing text notes stored in a GitHub repository.</p>
           <p>Inspired by nvAlt and the lack of open-source alternatives, coded by aadm with MiMo V2.5 Free in OpenCode.</p>
           <p><strong>How it works:</strong> Connects to GitHub via a Personal Access Token. Your token is stored locally in your browser and never sent anywhere except to GitHub's API.</p>
-          <p><strong>Features:</strong> File browsing, filename search, markdown rendering (with MathJax), basic editing, light/dark themes, YAML frontmatter toggle, installable as a PWA.</p>
-          <p><strong>To-Do:</strong> Add content search.</p>
+          <p><strong>Features:</strong> File browsing, filename and in-note content search, markdown rendering (with MathJax), basic editing, light/dark themes, YAML frontmatter toggle, installable as a PWA.</p>
           <p><strong>Source:</strong> Vanilla HTML/CSS/JS, no build step. Uses <a href="https://github.com/markedjs/marked" target="_blank" style="color:var(--accent)">marked.js</a> for markdown.</p>
           <p style="font-size:12px;margin-top:16px;color:var(--text-secondary)">To edit this text, search for the showInfo() function in index.html.</p>
           <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">Close</button>
@@ -1214,21 +1273,92 @@
     }
 
     // Image URL resolution
-    function resolveImageUrl(src, filePath) {
-      if (src.startsWith('http://') || src.startsWith('https://') || src.startsWith('data:')) return src;
+    //
+    // Notes live in a private repo, so a plain <img src="https://raw.githubusercontent.com/...">
+    // does NOT work: that's an unauthenticated browser request and GitHub's raw content CDN
+    // returns 404 for private repos regardless of whether the file exists. Instead, images
+    // are fetched through the authenticated Git Blobs API and turned into blob: object URLs.
+    const imageBlobCache = {}; // sha -> object URL
+
+    function normalizeRepoPath(path) {
+      const parts = path.split('/');
+      const stack = [];
+      for (const part of parts) {
+        if (part === '' || part === '.') continue;
+        if (part === '..') stack.pop();
+        else stack.push(part);
+      }
+      return stack.join('/');
+    }
+
+    function resolveImagePath(src, filePath) {
       const dir = filePath.split('/').slice(0, -1).join('/');
-      const resolved = dir ? `${dir}/${src}` : src;
-      return `https://raw.githubusercontent.com/${state.owner}/${state.repo}/${state.branch}/${resolved}`;
+      const joined = dir ? `${dir}/${src}` : src;
+      return normalizeRepoPath(joined);
+    }
+
+    function guessMimeType(path) {
+      const ext = (path.split('.').pop() || '').toLowerCase();
+      return {
+        png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', gif: 'image/gif',
+        svg: 'image/svg+xml', webp: 'image/webp', bmp: 'image/bmp', ico: 'image/x-icon',
+        avif: 'image/avif'
+      }[ext] || 'application/octet-stream';
+    }
+
+    async function fetchImageBlobUrl(sha, mime) {
+      if (imageBlobCache[sha]) return imageBlobCache[sha];
+      const data = await api(`/repos/${state.owner}/${state.repo}/git/blobs/${sha}`);
+      const binary = atob(data.content.replace(/\n/g, ''));
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+      const blob = new Blob([bytes], { type: mime });
+      const url = URL.createObjectURL(blob);
+      imageBlobCache[sha] = url;
+      return url;
+    }
+
+    function clearImageBlobCache() {
+      for (const url of Object.values(imageBlobCache)) {
+        try { URL.revokeObjectURL(url); } catch (e) { /* ignore */ }
+      }
+      for (const key of Object.keys(imageBlobCache)) delete imageBlobCache[key];
+    }
+
+    async function resolveGithubImages(container) {
+      const imgs = container.querySelectorAll('img[data-gh-path]');
+      await Promise.all(Array.from(imgs).map(async (img) => {
+        const path = img.getAttribute('data-gh-path');
+        try {
+          const entry = state.tree.find(f => f.path === path);
+          if (!entry) throw new Error('not found in repo tree');
+          const url = await fetchImageBlobUrl(entry.sha, guessMimeType(path));
+          img.src = url;
+          img.classList.remove('img-loading');
+        } catch (e) {
+          handleImgError(img, `Image not found: ${path}`);
+        }
+      }));
+    }
+
+    function handleImgError(img, message) {
+      img.classList.remove('img-loading');
+      img.classList.add('img-broken');
+      img.removeAttribute('src');
+      if (message) img.alt = message;
     }
 
     function makeRenderer(filePath) {
       const renderer = new marked.Renderer();
       renderer.image = function({ href, title, text }) {
         const src = href || '';
-        const resolved = resolveImageUrl(src, filePath);
-        const titleAttr = title ? ` title="${title.replace(/"/g, '&quot;')}"` : '';
-        const alt = text || '';
-        return `<img src="${resolved}" alt="${alt}"${titleAttr} loading="lazy" onerror="this.outerHTML='<div class=\\'content\\'>[Image not found: ${alt}]</div>'">`;
+        const alt = escapeAttr(text || '');
+        const titleAttr = title ? ` title="${escapeAttr(title)}"` : '';
+        if (/^(https?:|data:)/i.test(src)) {
+          return `<img src="${escapeAttr(src)}" alt="${alt}"${titleAttr} loading="lazy" onerror="handleImgError(this)">`;
+        }
+        const repoPath = resolveImagePath(src, filePath);
+        return `<img data-gh-path="${escapeAttr(repoPath)}" alt="${alt}"${titleAttr} loading="lazy" class="img-loading">`;
       };
       return renderer;
     }
@@ -1256,8 +1386,10 @@
       const content = state.currentContent;
       if (state.currentPath.endsWith('.md')) {
         const display = stripFrontmatter(content);
-        document.getElementById('view-content').innerHTML = marked.parse(display, { renderer: makeRenderer(state.currentPath) });
-        if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([document.getElementById('view-content')]);
+        const container = document.getElementById('view-content');
+        container.innerHTML = marked.parse(display, { renderer: makeRenderer(state.currentPath) });
+        resolveGithubImages(container);
+        if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([container]);
       } else {
         document.getElementById('view-content').innerHTML = `<pre><code>${escapeHtml(content)}</code></pre>`;
       }
@@ -1293,6 +1425,7 @@
         preview.classList.remove('hidden');
         const display = stripFrontmatter(textarea.value);
         preview.innerHTML = marked.parse(display, { renderer: makeRenderer(state.currentPath) });
+        resolveGithubImages(preview);
         if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([preview]);
       }
     }
@@ -1326,18 +1459,41 @@
     function clearSearch() {
       document.getElementById('search-input').value = '';
       document.getElementById('search-clear').classList.add('hidden');
+      document.getElementById('search-progress').classList.add('hidden');
       state.searchQuery = '';
       renderFileList();
     }
 
+    function toggleSearchMode() {
+      state.searchMode = state.searchMode === 'filename' ? 'content' : 'filename';
+      const btn = document.getElementById('search-mode-btn');
+      btn.textContent = state.searchMode;
+      btn.classList.toggle('active', state.searchMode === 'content');
+      document.getElementById('search-input').placeholder =
+        state.searchMode === 'content' ? 'Search inside notes...' : 'Search files...';
+      handleSearch();
+    }
+
+    let searchDebounceTimer = null;
     async function handleSearch() {
       const query = document.getElementById('search-input').value.trim();
       const clearBtn = document.getElementById('search-clear');
       clearBtn.classList.toggle('hidden', !query);
       state.searchQuery = query.toLowerCase();
-      if (!query) { renderFileList(); return; }
+      if (!query) {
+        document.getElementById('search-progress').classList.add('hidden');
+        renderFileList();
+        return;
+      }
       state.browsePath = '';
-      renderSearchResults(filterByFilename(state.searchQuery));
+
+      clearTimeout(searchDebounceTimer);
+      if (state.searchMode === 'filename') {
+        renderSearchResults(filterByFilename(state.searchQuery));
+        return;
+      }
+      // Debounce content search since it triggers network + heavier scanning
+      searchDebounceTimer = setTimeout(() => searchContent(state.searchQuery), 250);
     }
 
     function filterByFilename(query) {
@@ -1350,6 +1506,104 @@
         const parts = f.path.split('/');
         return { name: parts[parts.length - 1], path: f.path, type: 'file', size: f.size, sha: f.sha };
       });
+    }
+
+    // Content search: fetches and caches raw blob content for text files, then
+    // searches client-side. Cache is keyed by blob sha, so it stays valid across
+    // tree refreshes and only re-fetches files whose content actually changed.
+    const CONTENT_SEARCH_EXT = /\.(md|markdown|txt)$/i;
+
+    async function fetchBlobContent(sha) {
+      if (state.contentCache[sha] !== undefined) return state.contentCache[sha];
+      const data = await api(`/repos/${state.owner}/${state.repo}/git/blobs/${sha}`);
+      let content = '';
+      try {
+        if (data.encoding === 'base64') {
+          content = decodeBase64Utf8(data.content.replace(/\n/g, ''));
+        } else {
+          content = data.content || '';
+        }
+      } catch (e) {
+        content = '';
+      }
+      state.contentCache[sha] = content;
+      return content;
+    }
+
+    async function ensureContentIndexed(files, onProgress) {
+      const todo = files.filter(f => state.contentCache[f.sha] === undefined);
+      if (todo.length === 0) return;
+      const concurrency = 8;
+      let done = 0;
+      let idx = 0;
+      async function worker() {
+        while (idx < todo.length) {
+          const item = todo[idx++];
+          try { await fetchBlobContent(item.sha); } catch (e) { state.contentCache[item.sha] = ''; }
+          done++;
+          if (onProgress) onProgress(done, todo.length);
+        }
+      }
+      const workers = Array.from({ length: Math.min(concurrency, todo.length) }, worker);
+      await Promise.all(workers);
+    }
+
+    function buildSnippet(content, query) {
+      const lower = content.toLowerCase();
+      const idx = lower.indexOf(query);
+      if (idx === -1) return '';
+      const pad = 40;
+      const start = Math.max(0, idx - pad);
+      const end = Math.min(content.length, idx + query.length + pad);
+      let snippet = content.slice(start, end).replace(/\s+/g, ' ').trim();
+      snippet = escapeHtml(snippet);
+      // Highlight the match (case-insensitive) inside the escaped snippet
+      const escQuery = escapeHtml(content.slice(idx, idx + query.length));
+      const re = new RegExp(escQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+      snippet = snippet.replace(re, (m) => `<mark>${m}</mark>`);
+      if (start > 0) snippet = '…' + snippet;
+      if (end < content.length) snippet = snippet + '…';
+      return snippet;
+    }
+
+    async function searchContent(query) {
+      const list = document.getElementById('file-list');
+      const progress = document.getElementById('search-progress');
+      const files = state.tree.filter(f => CONTENT_SEARCH_EXT.test(f.path));
+
+      const needsIndexing = files.some(f => state.contentCache[f.sha] === undefined);
+      if (needsIndexing) {
+        list.innerHTML = '<div class="loading"><div class="spinner"></div> Indexing notes for search...</div>';
+        progress.classList.remove('hidden');
+      }
+
+      try {
+        await ensureContentIndexed(files, (done, total) => {
+          progress.textContent = `Indexing ${done}/${total} notes...`;
+        });
+      } finally {
+        progress.classList.add('hidden');
+      }
+
+      // Bail out if the query changed while we were indexing/fetching
+      const current = document.getElementById('search-input').value.trim().toLowerCase();
+      if (current !== query || state.searchMode !== 'content') return;
+
+      const results = [];
+      for (const f of files) {
+        const content = state.contentCache[f.sha] || '';
+        if (!content.toLowerCase().includes(query)) continue;
+        const parts = f.path.split('/');
+        results.push({
+          name: parts[parts.length - 1],
+          path: f.path,
+          type: 'file',
+          size: f.size,
+          sha: f.sha,
+          match: buildSnippet(content, query)
+        });
+      }
+      renderSearchResults(results);
     }
 
     function renderSearchResults(results) {
@@ -1365,9 +1619,9 @@
 
       html += results.map(item => {
         const displayName = state.hidePrefix ? stripPrefix(item.name) : item.name;
-        const match = item.match ? `<div style="font-size:11px;color:var(--accent);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(item.match).substring(0, 80)}</div>` : '';
+        const match = item.match ? `<div class="search-match">${item.match}</div>` : '';
         return `<div class="file-row" onclick="openFile('${item.path}', '${item.sha}')">
-          <div class="col-name">${displayName}${match}</div>
+          <div class="col-name">${escapeHtml(displayName)}${match}</div>
           <div class="col-size">${item.size ? formatSize(item.size) : ''}</div>
           <div class="col-date"></div>
         </div>`;
@@ -1403,6 +1657,10 @@
 
     function escapeHtml(str) {
       return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function escapeAttr(str) {
+      return escapeHtml(str).replace(/"/g, '&quot;');
     }
 
     function showToast(message, type = '') {
