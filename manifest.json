@@ -2,7 +2,7 @@
   "name": "nvAppnt",
   "short_name": "nvAppnt",
   "description": "Browse and search your GitHub notes",
-  "start_url": "/",
+  "start_url": "/nvAppnt/",
   "display": "standalone",
   "background_color": "#0d1117",
   "theme_color": "#0d1117",

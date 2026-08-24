@@ -2,7 +2,7 @@
 
 Barebones mobile-friendly web app (or [PWA](https://en.wikipedia.org/wiki/Progressive_web_app)) for browsing and editing text notes stored in a GitHub repository.
 
-Inspired by nvAlt and the lack of open-source alternatives, coded by aadm with MiMo V2.5 Free in OpenCode.
+Inspired by nvAlt and the lack of open-source alternatives, coded by aadm with MiMo V2.5 Free and Claude Sonnet 5 in OpenCode.
 
 Launch it here: [`https://aadm.github.io/nvAppnt/`](`https://aadm.github.io/nvAppnt/`)
 
@@ -36,7 +36,7 @@ Launch it here: [`https://aadm.github.io/nvAppnt/`](`https://aadm.github.io/nvAp
 
 ### Typography
 
-- **UI font:** Inter (weights 400, 500, 600, 700)
+- **UI font:** Roboto (weights 400, 500, 600, 700)
 - **Monospace font:** JetBrains Mono (weights 400, 500)
 - **Icon set:** Google Material Symbols Outlined (variable font, 20px default)
 - **Fallback stack:** `-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif`
@@ -251,9 +251,68 @@ All state is in a single `state` object. Key fields:
 
 ```
 nvAppnt/
-  index.html      # Main app (all HTML/CSS/JS in one file)
-  manifest.json   # PWA manifest
-  sw.js           # Service worker for offline caching
-  icons/          # App icons (192x192 and 512x512 PNG)
-  README.md       # This file
+  index.html           # Main app (all HTML/CSS/JS in one file)
+  manifest.json        # PWA manifest
+  sw.js                # Service worker for offline caching
+  icons/
+    icon-192.png       # PWA icon 192x192
+    icon-512.png       # PWA icon 512x512
+    favicon.svg        # Browser tab favicon (Material Symbols "script" icon)
+    favicon-32.png     # PNG fallback for favicon
+  README.md            # This file
 ```
+
+## Favicon
+
+The browser tab uses the Material Symbols "script" icon as an SVG favicon. This is a simple
+document-with-lines glyph that scales cleanly at any size:
+
+```html
+<link rel="icon" type="image/svg+xml" href="icons/favicon.svg">
+```
+
+A 32x32 PNG fallback (`favicon-32.png`) is also generated from the PWA icon for older browsers.
+
+## Icon Generation
+
+The app icon is generated programmatically with Python and Pillow. The design is a dark rounded
+rectangle (`#0d1117`) with white "nvAppnt" text: "nv" in Roboto Bold and "Appnt" in Roboto
+Condensed, giving the two parts of the name distinct visual weight.
+
+```python
+from PIL import Image, ImageDraw, ImageFont
+
+def create_icon(size):
+    img = Image.new('RGBA', (size, size), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(img)
+    bg = (13, 17, 23, 255)
+    white = (255, 255, 255, 255)
+
+    # Dark background
+    pad = int(size * 0.06)
+    draw.rounded_rectangle([pad, pad, size-pad, size-pad],
+                           radius=int(size * 0.10), fill=bg)
+
+    # Roboto Bold for "nv", Roboto Condensed for "Appnt"
+    font_bold = ImageFont.truetype('Roboto-Bold.ttf', int(size * 0.24))
+    font_cond = ImageFont.truetype('RobotoCondensed-Regular.ttf', int(size * 0.24))
+
+    # Measure and center
+    nv_w = draw.textbbox((0,0), "nv", font=font_bold)[2]
+    rest_w = draw.textbbox((0,0), "Appnt", font=font_cond)[2]
+    total_w = nv_w + rest_w
+    max_h = max(draw.textbbox((0,0), "nv", font=font_bold)[3],
+                draw.textbbox((0,0), "Appnt", font=font_cond)[3])
+    text_y = (size - max_h) // 2
+    text_x = (size - total_w) // 2
+
+    draw.text((text_x, text_y), "nv", fill=white, font=font_bold)
+    draw.text((text_x + nv_w, text_y), "Appnt", fill=white, font=font_cond)
+    return img
+
+create_icon(192).save('icons/icon-192.png')
+create_icon(512).save('icons/icon-512.png')
+create_icon(192).resize((32, 32), Image.LANCZOS).save('icons/favicon-32.png')
+```
+
+Requires `pip install Pillow` and the Roboto / Roboto Condensed font files installed on the system.
