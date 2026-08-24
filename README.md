@@ -22,6 +22,7 @@ Launch it here: [`https://aadm.github.io/nvAppnt/`](`https://aadm.github.io/nvAp
 - Filename search (instant, client-side filtering)
 - Content search (searches inside note text, indexed client-side via Git blobs API)
 - Markdown rendering with image support (works with private repos via authenticated Git Blobs API)
+- LaTeX / MathJax rendering (`$...$` and `$$...$$` delimiters)
 - Basic editor with save (creates Git commits via GitHub API)
 - Light/dark theme toggle
 - Sort files by name, size, or last updated
@@ -151,6 +152,21 @@ python3 -m http.server 8080
 5. Scroll down and tap "Add to Home Screen"
 6. The app now appears on your home screen with its own icon
 
+### Refreshing the PWA after updates
+
+When the app is updated on GitHub Pages, your iPhone won't pick up the changes automatically because the service worker caches `index.html`. To force an update:
+
+1. **Close the app fully** - swipe up from the app switcher to kill it
+2. **Re-open the app** from the home screen
+
+If the old version still loads, the service worker cache may be stale. In that case:
+
+1. Open the app in **Safari** (not the home screen icon)
+2. Tap the Share button -> **"Remove from Home Screen"**
+3. Re-install via Share -> **"Add to Home Screen"**
+
+The service worker uses a versioned cache name (currently `notes-viewer-v2`). Bumping this version in `sw.js` forces a full cache wipe on the next activation, which is the cleanest way to guarantee users get fresh assets.
+
 ### What Gets Saved
 
 When you install and use the app, the following data is stored **locally in your browser** (never sent to any server except GitHub):
@@ -187,41 +203,37 @@ The token persists across sessions. You only need to enter it once. If you clear
 | Get file content    | `GET /repos/{owner}/{repo}/contents/{path}`        | Returns base64 content         |
 | Save file           | `PUT /repos/{owner}/{repo}/contents/{path}`        | Creates a commit               |
 | Get commit history  | `GET /repos/{owner}/{repo}/commits?per_page=100`   | For "Updated" column           |
-| Get blob content    | `GET /repos/{owner}/{repo}/git/blobs/{sha}`        | Used for content search indexing |
+| Get blob content    | `GET /repos/{owner}/{repo}/git/blobs/{sha}`        | Used for content search + image loading |
 
 ### Content Search
 
-Content search does not use GitHub's `/search/code` endpoint (its index lags for private
-repos and returned inconsistent results). Instead, the app fetches the raw content of every
-`.md`/`.markdown`/`.txt` file via the Git Blobs API and searches client-side.
+Content search does not use GitHub's `/search/code` endpoint (its index lags for private repos and returned inconsistent results). Instead, the app fetches the raw content of every `.md`/`.markdown`/`.txt` file via the Git Blobs API and searches client-side.
 
-- Content is cached in memory keyed by blob **sha**, so it stays valid across tree refreshes
-  and only re-fetches files whose content actually changed.
-- The first content search after opening the app triggers an indexing pass (parallel fetches,
-  8 at a time); a progress indicator shows while this runs. Subsequent searches are instant.
-- Matches show a highlighted snippet of surrounding text.
-- The cache is cleared on logout.
+**How the "indexing" works:**
 
+There is no database and nothing is written to disk. The "index" is a plain JavaScript object (`state.contentCache`) living in page memory, structured as:
+
+```
+{ [blobSha]: decodedTextContent }
+```
+
+- Content is cached keyed by the blob's Git **sha** (a hash of the content itself). This means cache invalidation is automatic: editing a file changes its sha, so the old entry is never looked up again and the new sha triggers a fresh fetch on the next search.
+- The first content search after opening the app triggers an indexing pass: all text files are fetched in parallel (8 at a time), decoded, and cached. A progress indicator shows while this runs. Subsequent searches are instant since everything is already in memory.
+- Matches show a highlighted snippet of surrounding text for context.
+- The cache is cleared on logout. Closing the tab or reloading the page also wipes it (nothing persists to `localStorage` or `IndexedDB`).
 
 ### Image Resolution
 
-Images in markdown use relative paths (e.g., `img/photo.png`). Since notes are usually kept in a
-**private** repo, a plain `<img src="https://raw.githubusercontent.com/...">` does not work: that's
-an unauthenticated browser request, and GitHub's raw content CDN returns 404 for private repos
-regardless of whether the file actually exists.
+Images in markdown use relative paths (e.g., `img/photo.png`). Since notes are usually kept in a **private** repo, a plain `<img src="https://raw.githubusercontent.com/...">` does not work: that's an unauthenticated browser request, and GitHub's raw content CDN returns 404 for private repos regardless of whether the file actually exists.
 
-Instead, relative image paths are resolved against the file's directory to a repo-relative path,
-looked up in the already-loaded Git tree to find the blob sha, then fetched through the
-authenticated **Git Blobs API** (`GET /repos/{owner}/{repo}/git/blobs/{sha}`) and converted to a
-`blob:` object URL:
+Instead, relative image paths are resolved against the file's directory to a repo-relative path, looked up in the already-loaded Git tree to find the blob sha, then fetched through the authenticated **Git Blobs API** (`GET /repos/{owner}/{repo}/git/blobs/{sha}`) and converted to a `blob:` object URL:
 
-1. Renderer emits `<img data-gh-path="{repo-relative-path}" class="img-loading">` as a placeholder.
-2. After the HTML is inserted into the DOM, `resolveGithubImages()` scans for these placeholders,
-   fetches each blob's base64 content, decodes it into a `Blob`, and swaps in an object URL.
-3. Object URLs are cached in memory keyed by blob sha and revoked on logout.
+1. The markdown renderer emits `<img data-gh-path="{repo-relative-path}" class="img-loading">` as a placeholder. A dashed border placeholder is shown while loading.
+2. After the HTML is inserted into the DOM, `resolveGithubImages()` scans for these placeholders, fetches each blob's base64 content, decodes it into a `Blob`, creates an object URL via `URL.createObjectURL()`, and swaps it into the `<img>` src.
+3. Object URLs are cached in memory keyed by blob sha, so the same image isn't re-fetched when switching between notes. The cache is cleaned up (`URL.revokeObjectURL`) on logout to avoid memory leaks.
+4. If an image path doesn't match any file in the repo, a dashed placeholder with "Image not found: {path}" is shown instead of a broken browser icon.
 
-Absolute `http(s)://` and `data:` image URLs are left untouched and rendered directly (no auth
-needed for external images).
+Absolute `http(s)://` and `data:` image URLs are left untouched and rendered directly (no auth needed for external images).
 
 ### State Management
 
@@ -233,17 +245,15 @@ All state is in a single `state` object. Key fields:
 - `hidePrefix` - hides numerical filename prefixes (e.g., `202608051608_`) for cleaner display
 - `hideMetadata` - hides Size and Updated columns for compact view on small screens
 - `searchMode` - `filename` or `content`, toggled via the search box button
-- `contentCache` - map of blob sha to decoded file content, used for content search indexing
+- `contentCache` - map of blob sha to decoded file content, used for content search indexing (in-memory only, cleared on logout)
 
 ## File Structure
 
 ```
-notes-viewer/
+nvAppnt/
   index.html      # Main app (all HTML/CSS/JS in one file)
   manifest.json   # PWA manifest
   sw.js           # Service worker for offline caching
   icons/          # App icons (192x192 and 512x512 PNG)
   README.md       # This file
 ```
-
-
