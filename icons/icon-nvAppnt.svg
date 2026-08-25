@@ -9,6 +9,9 @@
    id="svg1"
    inkscape:version="1.4.4 (1:1.4.4+202605061436+dcaf3e7d9e)"
    sodipodi:docname="icon-nvAppnt.svg"
+   inkscape:export-filename="icon-nvAppnt_180-uci.png"
+   inkscape:export-xdpi="16.875"
+   inkscape:export-ydpi="16.875"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -26,14 +29,14 @@
      showguides="true"
      inkscape:lockguides="false"
      inkscape:zoom="0.60836042"
-     inkscape:cx="469.29417"
-     inkscape:cy="485.73179"
+     inkscape:cx="468.47229"
+     inkscape:cy="484.08803"
      inkscape:window-width="1920"
      inkscape:window-height="1131"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
-     inkscape:current-layer="layer1">
+     inkscape:current-layer="layer2">
     <sodipodi:guide
        position="0,1024"
        orientation="0,1024"
@@ -84,32 +87,162 @@
        inkscape:color="rgb(0,134,229)" />
   </sodipodi:namedview>
   <defs
-     id="defs1" />
+     id="defs1">
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath2">
+      <rect
+         style="display:inline;fill:#1a1a1a;stroke-width:0.83213"
+         id="rect2"
+         width="718.55365"
+         height="1010.4697"
+         x="-837.76245"
+         y="-126.24536"
+         transform="matrix(0.31553674,-0.94891336,0.98823711,0.15292941,0,0)" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath2-9">
+      <rect
+         style="display:inline;fill:#1a1a1a;stroke-width:0.83213"
+         id="rect2-2"
+         width="718.55365"
+         height="1010.4697"
+         x="-837.76245"
+         y="-126.24536"
+         transform="matrix(0.31553674,-0.94891336,0.98823711,0.15292941,0,0)" />
+    </clipPath>
+  </defs>
   <g
-     inkscape:label="Layer 1"
      inkscape:groupmode="layer"
-     id="layer1">
+     id="layer3"
+     inkscape:label="background"
+     style="display:inline">
     <rect
-       style="fill:#1a1a1a"
-       id="rect8"
+       style="display:inline;fill:#1a1a1a;fill-opacity:1"
+       id="rect3"
        width="1024"
        height="1024"
        x="0"
-       y="0" />
+       y="0"
+       inkscape:label="black" />
+    <rect
+       style="display:none;fill:#ffffff;fill-opacity:1"
+       id="rect3-1"
+       width="1024"
+       height="1024"
+       x="0"
+       y="0"
+       inkscape:label="white" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="uci stripes"
+     style="display:inline">
+    <g
+       id="g2"
+       transform="matrix(0.22103044,0.97526706,-1.4283092,0.32429998,1193.8826,187.62105)"
+       style="display:inline"
+       clip-path="url(#clipPath2-9)">
+      <rect
+         style="fill:#0072ce;fill-opacity:1;stroke-width:0.663958"
+         id="rect1"
+         width="50"
+         height="1024"
+         x="223.5517"
+         y="0"
+         inkscape:label="blue" />
+      <rect
+         style="fill:#ee3124;fill-opacity:1;stroke-width:0.663958"
+         id="rect1-3"
+         width="50"
+         height="1024"
+         x="273.5517"
+         y="-1024"
+         transform="scale(1,-1)"
+         inkscape:label="red" />
+      <rect
+         style="fill:#1a1a1a;stroke-width:0.663958"
+         id="rect1-3-1"
+         width="50"
+         height="1024"
+         x="373.5517"
+         y="-1024"
+         transform="scale(1,-1)"
+         inkscape:label="black" />
+      <rect
+         style="fill:#ffcb05;fill-opacity:1;stroke-width:0.663958"
+         id="rect1-3-1-3"
+         width="50"
+         height="1024"
+         x="323.5517"
+         y="-1024"
+         transform="scale(1,-1)"
+         inkscape:label="yellow" />
+      <rect
+         style="fill:#009639;fill-opacity:1;stroke-width:0.663958"
+         id="rect1-3-1-3-6"
+         width="50"
+         height="1024"
+         x="423.5517"
+         y="-1024"
+         transform="scale(1,-1)"
+         inkscape:label="green" />
+    </g>
+  </g>
+  <g
+     inkscape:label="text"
+     inkscape:groupmode="layer"
+     id="layer1"
+     style="display:inline">
     <text
        xml:space="preserve"
-       style="font-weight:bold;font-size:235.068px;font-family:Roboto;-inkscape-font-specification:'Roboto Bold';text-align:center;letter-spacing:4.89726px;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#1a1a1a;stroke-width:1.22432"
+       style="font-weight:bold;font-size:235.068px;font-family:Roboto;-inkscape-font-specification:'Roboto Bold';text-align:center;letter-spacing:4.89726px;writing-mode:lr-tb;direction:ltr;text-anchor:middle;display:inline;fill:#1a1a1a;stroke-width:1.22432"
        x="510.13901"
        y="571.68524"
-       id="text8"><tspan
+       id="text8"
+       inkscape:label="nvAppnt-white"><tspan
          sodipodi:role="line"
          id="tspan8"
-         x="510.13901"
-         y="571.68524"
+         x="0"
+         y="0"
          style="font-size:235.068px;letter-spacing:4.89726px;fill:#ececec;stroke-width:1.22432"><tspan
            style="font-size:244.864px;letter-spacing:4.89726px;fill:#f9f9f9;stroke-width:1.22432"
            id="tspan10">nv</tspan><tspan
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Roboto Condensed';-inkscape-font-specification:'Roboto Condensed, ';letter-spacing:0px;fill:#cccccc;stroke-width:1.22432"
            id="tspan9">Appnt</tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-weight:bold;font-size:235.068px;font-family:Roboto;-inkscape-font-specification:'Roboto Bold';text-align:center;letter-spacing:4.89726px;writing-mode:lr-tb;direction:ltr;text-anchor:middle;display:none;fill:#1a1a1a;stroke-width:1.22432"
+       x="510.13901"
+       y="571.68524"
+       id="text5"
+       inkscape:label="nvAppnt-black"><tspan
+         sodipodi:role="line"
+         id="tspan5"
+         x="510.13901"
+         y="571.68524"
+         style="font-size:235.068px;letter-spacing:4.89726px;fill:#ececec;stroke-width:1.22432"><tspan
+           style="font-size:244.864px;letter-spacing:4.89726px;fill:#1a1a1a;stroke-width:1.22432"
+           id="tspan3">nv</tspan><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Roboto Condensed';-inkscape-font-specification:'Roboto Condensed, ';letter-spacing:0px;fill:#cccccc;stroke-width:1.22432"
+           id="tspan4">Appnt</tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-weight:bold;font-size:235.068px;font-family:Roboto;-inkscape-font-specification:'Roboto Bold';text-align:center;letter-spacing:4.89726px;writing-mode:lr-tb;direction:ltr;text-anchor:middle;display:none;fill:#1a1a1a;stroke:#000000;stroke-width:3;stroke-dasharray:none;stroke-opacity:1"
+       x="510.13901"
+       y="571.68524"
+       id="text11"
+       inkscape:label="nvAppnt-white-outline"><tspan
+         sodipodi:role="line"
+         id="tspan11"
+         x="510.13901"
+         y="571.68524"
+         style="font-size:235.068px;letter-spacing:4.89726px;fill:#ececec;stroke:#000000;stroke-width:3;stroke-dasharray:none;stroke-opacity:1"><tspan
+           style="font-size:244.864px;letter-spacing:4.89726px;fill:#f9f9f9;stroke:#000000;stroke-width:3;stroke-dasharray:none;stroke-opacity:1"
+           id="tspan6">nv</tspan><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Roboto Condensed';-inkscape-font-specification:'Roboto Condensed, ';letter-spacing:0px;fill:#cccccc;stroke:#000000;stroke-width:3;stroke-dasharray:none;stroke-opacity:1"
+           id="tspan7">Appnt</tspan></tspan></text>
   </g>
 </svg>
