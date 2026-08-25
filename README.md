@@ -1,6 +1,6 @@
 # nvAppnt
 
-Barebones mobile-friendly web app (or [PWA](https://en.wikipedia.org/wiki/Progressive_web_app)) for browsing and editing text notes stored in a GitHub repository.
+Barebones mobile-friendly web app (or [PWA](https://en.wikipedia.org/wiki/Progressive_web_app)) for browsing, searching and editing text notes stored in a GitHub repository.
 
 Inspired by nvAlt and the lack of open-source alternatives, coded by aadm with MiMo V2.5 Free and Claude Sonnet 5 in OpenCode.
 
@@ -264,20 +264,16 @@ nvAppnt/
 
 ## Favicon
 
-The browser tab uses the Material Symbols "script" icon as an SVG favicon. This is a simple
-document-with-lines glyph that scales cleanly at any size:
+The browser tab uses the Material Symbols "script" icon as an SVG favicon. Downloaded here:
 
-```html
-<link rel="icon" type="image/svg+xml" href="icons/favicon.svg">
-```
+<https://fonts.google.com/icons?selected=Material+Symbols+Outlined:script:FILL@0;wght@400;GRAD@0;opsz@40&icon.query=text&icon.size=32&icon.color=%231f1f1f>
 
-A 32x32 PNG fallback (`favicon-32.png`) is also generated from the PWA icon for older browsers.
 
 ## Icon Generation
 
-The app icon is generated programmatically with Python and Pillow. The design is a dark rounded
-rectangle (`#0d1117`) with white "nvAppnt" text: "nv" in Roboto Bold and "Appnt" in Roboto
-Condensed, giving the two parts of the name distinct visual weight.
+A first attempt to generate programmatically the icon with Python and Pillow resulted in a mediocre result (check `icons\icon-512_old.png`).
+
+I had the following idea in mind: super simple, white "nvAppnt" text with "nv" in Roboto Bold and "Appnt" in Roboto Condensed, giving the two parts of the name distinct visual weight. The following is the code using Pillow. 
 
 ```python
 from PIL import Image, ImageDraw, ImageFont
@@ -316,3 +312,5 @@ create_icon(192).resize((32, 32), Image.LANCZOS).save('icons/favicon-32.png')
 ```
 
 Requires `pip install Pillow` and the Roboto / Roboto Condensed font files installed on the system.
+
+In the end, I simply launched Inkscape and made a much better job by hand (see `icons\icon-nvAppnt.svg`).

@@ -1,7 +1,7 @@
 {
   "name": "nvAppnt",
   "short_name": "nvAppnt",
-  "description": "Browse and search your GitHub notes",
+  "description": "Browse / search / edit GitHub repo notes",
   "start_url": "/nvAppnt/",
   "display": "standalone",
   "background_color": "#0d1117",
@@ -9,8 +9,8 @@
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "icons/icon-192.png",
-      "sizes": "192x192",
+      "src": "icons/icon-180.png",
+      "sizes": "180x180",
       "type": "image/png",
       "purpose": "any maskable"
     },

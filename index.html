@@ -10,7 +10,7 @@
   <title>nvAppnt</title>
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/svg+xml" href="icons/favicon.svg">
-  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-180.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
@@ -744,9 +744,11 @@
 <body>
   <!-- Login View -->
   <div id="login-view" class="login">
-    <div style="font-size:48px; margin-bottom:16px">&#128221;</div>
-    <h1>Notes Viewer</h1>
-    <p>Browse and search your GitHub notes on the go.</p>
+    <div style="margin-bottom:16px">
+      <img src="icons/icon-180.png" alt="nvAppnt" style="width:72px;height:72px;border-radius:16px">
+    </div>
+    <h1>nvAppnt</h1>
+    <p>Barebones mobile-friendly web app for browsing, searching and editing notes stored in a GitHub repo.</p>
     <div class="login-form">
       <input type="text" id="owner-input" placeholder="GitHub username (e.g. aadm)">
       <input type="text" id="repo-input" placeholder="Repository name (e.g. notes)">
@@ -1031,8 +1033,8 @@
         <div class="modal">
           <h2>nvAppnt</h2>
           <p><strong>Version:</strong> 1.2.0</p>
-          <p>Barebones mobile-friendly web app for browsing and editing text notes stored in a GitHub repository.</p>
-          <p>Inspired by nvAlt and the lack of open-source alternatives, coded by aadm with MiMo V2.5 Free in OpenCode.</p>
+          <p>Barebones mobile-friendly web app for browsing, searching and editing text notes stored in a GitHub repository.</p>
+          <p>Inspired by nvAlt and the lack of open-source alternatives, coded by aadm with MiMo V2.5 Free and Claude Sonnet 5 in OpenCode.</p>
           <p><strong>How it works:</strong> Connects to GitHub via a Personal Access Token. Your token is stored locally in your browser and never sent anywhere except to GitHub's API.</p>
           <p><strong>Features:</strong> File browsing, filename and in-note content search, markdown rendering (with MathJax), basic editing, light/dark themes, YAML frontmatter toggle, installable as a PWA.</p>
           <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">Close</button>
@@ -1434,7 +1436,7 @@
       const encoded = btoa(unescape(encodeURIComponent(content)));
       try {
         await apiPut(`/repos/${state.owner}/${state.repo}/contents/${state.currentPath}`, {
-          message: `Update ${state.currentPath.split('/').pop()} via Notes Viewer`,
+          message: `Update ${state.currentPath.split('/').pop()} via nvAppnt`,
           content: encoded, sha: state.currentSha, branch: state.branch
         });
         state.currentContent = content;
