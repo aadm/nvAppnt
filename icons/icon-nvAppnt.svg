@@ -9,9 +9,9 @@
    id="svg1"
    inkscape:version="1.4.4 (1:1.4.4+202605061436+dcaf3e7d9e)"
    sodipodi:docname="icon-nvAppnt.svg"
-   inkscape:export-filename="icon-512.png"
-   inkscape:export-xdpi="48"
-   inkscape:export-ydpi="48"
+   inkscape:export-filename="icon-180.png"
+   inkscape:export-xdpi="16.875"
+   inkscape:export-ydpi="16.875"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -29,14 +29,14 @@
      showguides="true"
      inkscape:lockguides="false"
      inkscape:zoom="0.81640625"
-     inkscape:cx="512"
-     inkscape:cy="511.38756"
+     inkscape:cx="451.98086"
+     inkscape:cy="550.58373"
      inkscape:window-width="1920"
      inkscape:window-height="1131"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
-     inkscape:current-layer="layer2">
+     inkscape:current-layer="layer1">
     <sodipodi:guide
        position="0,1024"
        orientation="0,1024"
@@ -88,6 +88,74 @@
   </sodipodi:namedview>
   <defs
      id="defs1">
+    <inkscape:path-effect
+       effect="bend_path"
+       id="path-effect8"
+       is_visible="true"
+       lpeversion="1"
+       bendpath="M -232.20679,522.9219 H 1285.6394"
+       prop_scale="1"
+       scale_y_rel="false"
+       vertical="false"
+       hide_knot="false" />
+    <inkscape:path-effect
+       effect="bend_path"
+       id="path-effect7"
+       is_visible="true"
+       lpeversion="1"
+       bendpath="M 58.794258,988.47847 C 103.58143,942.04226 148.3686,895.60605 202.67227,891.9318 c 54.30367,-3.67425 118.12128,35.41189 183.51146,35.96933 65.39018,0.55744 132.34897,-37.41309 201.75957,-46.48466 69.41061,-9.07157 141.26882,10.75578 203.5341,4.0186 62.26528,-6.73717 114.93408,-40.03794 176.58709,-51.58489 61.65301,-11.54695 132.28641,-1.33981 202.92111,8.86752"
+       prop_scale="1"
+       scale_y_rel="false"
+       vertical="false"
+       hide_knot="false" />
+    <inkscape:path-effect
+       effect="bspline"
+       id="path-effect6"
+       is_visible="true"
+       lpeversion="1.3"
+       weight="33.333333"
+       steps="2"
+       helper_size="0"
+       apply_no_weight="true"
+       apply_with_weight="true"
+       only_selected="false"
+       uniform="false" />
+    <inkscape:path-effect
+       effect="bspline"
+       id="path-effect5"
+       is_visible="true"
+       lpeversion="1.3"
+       weight="33.333333"
+       steps="2"
+       helper_size="0"
+       apply_no_weight="true"
+       apply_with_weight="true"
+       only_selected="false"
+       uniform="false" />
+    <inkscape:path-effect
+       effect="bspline"
+       id="path-effect4"
+       is_visible="true"
+       lpeversion="1.3"
+       weight="33.333333"
+       steps="2"
+       helper_size="0"
+       apply_no_weight="true"
+       apply_with_weight="true"
+       only_selected="false"
+       uniform="false" />
+    <inkscape:path-effect
+       effect="bspline"
+       id="path-effect3"
+       is_visible="true"
+       lpeversion="1.3"
+       weight="33.333333"
+       steps="2"
+       helper_size="0"
+       apply_no_weight="true"
+       apply_with_weight="true"
+       only_selected="false"
+       uniform="false" />
     <clipPath
        clipPathUnits="userSpaceOnUse"
        id="clipPath2">
@@ -110,7 +178,8 @@
          height="1010.4697"
          x="-837.76245"
          y="-126.24536"
-         transform="matrix(0.31553674,-0.94891336,0.98823711,0.15292941,0,0)" />
+         transform="matrix(0.31553674,-0.94891336,0.98823711,0.15292941,0,0)"
+         d="m -837.96242,-126.24536 h 718.55361 V 884.22437 h -718.55361 z" />
     </clipPath>
   </defs>
   <g
@@ -141,54 +210,69 @@
      inkscape:label="uci stripes"
      style="display:inline">
     <g
-       id="g2"
-       transform="matrix(0.22103044,0.97526706,-1.4283092,0.32429998,1193.8826,187.62105)"
-       style="display:inline"
-       clip-path="url(#clipPath2-9)">
-      <rect
-         style="fill:#0072ce;fill-opacity:1;stroke-width:0.663958"
-         id="rect1"
-         width="50"
-         height="1024"
-         x="223.5517"
-         y="0"
-         inkscape:label="blue" />
-      <rect
-         style="fill:#ee3124;fill-opacity:1;stroke-width:0.663958"
-         id="rect1-3"
-         width="50"
-         height="1024"
-         x="273.5517"
-         y="-1024"
-         transform="scale(1,-1)"
-         inkscape:label="red" />
-      <rect
-         style="display:inline;fill:#ffcb05;fill-opacity:1;stroke-width:0.663958"
-         id="rect1-3-1"
-         width="50"
-         height="1024"
-         x="373.5517"
-         y="-1024"
-         transform="scale(1,-1)"
-         inkscape:label="yellow" />
-      <rect
-         style="display:inline;fill:#000000;fill-opacity:1;stroke-width:0.663958"
-         id="rect1-3-1-3"
-         width="50"
-         height="1024"
-         x="323.5517"
-         y="-1024"
-         transform="scale(1,-1)"
-         inkscape:label="black" />
-      <rect
-         style="display:inline;fill:#009639;fill-opacity:1;stroke-width:0.663958"
-         id="rect1-3-1-3-6"
-         width="50"
-         height="1024"
-         x="423.5517"
-         y="-1024"
-         transform="scale(1,-1)"
-         inkscape:label="green" />
+       id="g7"
+       transform="translate(12.912524,91.219758)"
+       inkscape:path-effect="#path-effect8">
+      <g
+         id="g2"
+         transform="matrix(0.22103044,0.97526706,-1.4283092,0.32429998,1180.9701,138.85769)"
+         style="display:inline"
+         clip-path="url(#clipPath2-9)">
+        <path
+           style="fill:#0072ce;fill-opacity:1;stroke-width:0.663958"
+           id="rect1"
+           width="50"
+           height="1024"
+           x="223.5517"
+           y="0"
+           inkscape:label="blue"
+           sodipodi:type="rect"
+           d="m 223.52955,0.06661202 50,2e-7 1e-5,1023.99998778 c -16.66667,0 -33.33334,0 -50,0 -1e-5,-341.33334 -1e-5,-682.66666 -1e-5,-1023.99998798 z" />
+        <path
+           style="fill:#ee3124;fill-opacity:1;stroke-width:0.663958"
+           id="rect1-3"
+           width="50"
+           height="1024"
+           x="273.5517"
+           y="-1024"
+           transform="scale(1,-1)"
+           inkscape:label="red"
+           sodipodi:type="rect"
+           d="m 273.52956,-1024.0666 50,0 -1e-5,1023.99998758 -50,2e-7 z" />
+        <path
+           style="display:inline;fill:#ffcb05;fill-opacity:1;stroke-width:0.663958"
+           id="rect1-3-1"
+           width="50"
+           height="1024"
+           x="373.5517"
+           y="-1024"
+           transform="scale(1,-1)"
+           inkscape:label="yellow"
+           sodipodi:type="rect"
+           d="m 373.52956,-1024.0666 50,0 -1e-5,1023.99998719 -50,2e-7 z" />
+        <path
+           style="display:inline;fill:#000000;fill-opacity:1;stroke-width:0.663958"
+           id="rect1-3-1-3"
+           width="50"
+           height="1024"
+           x="323.5517"
+           y="-1024"
+           transform="scale(1,-1)"
+           inkscape:label="black"
+           sodipodi:type="rect"
+           d="m 323.52956,-1024.0666 50,0 -1e-5,1023.99998739 -50,1.9e-7 z" />
+        <path
+           style="display:inline;fill:#009639;fill-opacity:1;stroke-width:0.663958"
+           id="rect1-3-1-3-6"
+           width="50"
+           height="1024"
+           x="423.5517"
+           y="-1024"
+           transform="scale(1,-1)"
+           inkscape:label="green"
+           sodipodi:type="rect"
+           d="m 423.52956,-1024.0666 50,0 -1e-5,1023.99998699 -50,2e-7 z" />
+      </g>
     </g>
   </g>
   <g
@@ -198,15 +282,15 @@
      style="display:inline">
     <text
        xml:space="preserve"
-       style="font-weight:bold;font-size:235.068px;font-family:Roboto;-inkscape-font-specification:'Roboto Bold';text-align:center;letter-spacing:4.89726px;writing-mode:lr-tb;direction:ltr;text-anchor:middle;display:inline;fill:#1a1a1a;stroke-width:1.22432"
-       x="510.13901"
-       y="571.68524"
+       style="font-weight:bold;font-size:235.068px;font-family:Roboto;-inkscape-font-specification:'Roboto Bold';text-align:center;letter-spacing:4.89726px;writing-mode:lr-tb;direction:ltr;text-anchor:middle;display:none;fill:#1a1a1a;stroke-width:1.22432"
+       x="508.91412"
+       y="405.64365"
        id="text8"
        inkscape:label="nvAppnt-white"><tspan
          sodipodi:role="line"
          id="tspan8"
-         x="0"
-         y="0"
+         x="508.91412"
+         y="405.64365"
          style="font-size:235.068px;letter-spacing:4.89726px;fill:#ececec;stroke-width:1.22432"><tspan
            style="font-size:244.864px;letter-spacing:4.89726px;fill:#f9f9f9;stroke-width:1.22432"
            id="tspan10">nv</tspan><tspan
@@ -214,31 +298,31 @@
            id="tspan9">Appnt</tspan></tspan></text>
     <text
        xml:space="preserve"
-       style="font-weight:bold;font-size:235.068px;font-family:Roboto;-inkscape-font-specification:'Roboto Bold';text-align:center;letter-spacing:4.89726px;writing-mode:lr-tb;direction:ltr;text-anchor:middle;display:none;fill:#1a1a1a;stroke-width:1.22432"
-       x="510.13901"
-       y="571.68524"
+       style="font-weight:bold;font-size:267.978px;font-family:Roboto;-inkscape-font-specification:'Roboto Bold';text-align:center;letter-spacing:5.58288px;writing-mode:lr-tb;direction:ltr;text-anchor:middle;display:inline;fill:#1a1a1a;stroke-width:1.39573"
+       x="509.487"
+       y="496.8634"
        id="text5"
        inkscape:label="nvAppnt-black"><tspan
          sodipodi:role="line"
          id="tspan5"
-         x="510.13901"
-         y="571.68524"
-         style="font-size:235.068px;letter-spacing:4.89726px;fill:#ececec;stroke-width:1.22432"><tspan
-           style="font-size:244.864px;letter-spacing:4.89726px;fill:#1a1a1a;stroke-width:1.22432"
+         x="509.487"
+         y="496.8634"
+         style="font-size:267.978px;letter-spacing:5.58288px;fill:#666666;stroke-width:1.39573"><tspan
+           style="font-size:293.333px;letter-spacing:5.58288px;fill:#1a1a1a;stroke-width:1.39573"
            id="tspan3">nv</tspan><tspan
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Roboto Condensed';-inkscape-font-specification:'Roboto Condensed, ';letter-spacing:0px;fill:#cccccc;stroke-width:1.22432"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:266.667px;font-family:'Roboto Condensed';-inkscape-font-specification:'Roboto Condensed, ';letter-spacing:0px;fill:#4d4d4d;stroke-width:1.39573"
            id="tspan4">Appnt</tspan></tspan></text>
     <text
        xml:space="preserve"
-       style="font-weight:bold;font-size:235.068px;font-family:Roboto;-inkscape-font-specification:'Roboto Bold';text-align:center;letter-spacing:4.89726px;writing-mode:lr-tb;direction:ltr;text-anchor:middle;display:inline;fill:#1a1a1a;stroke:#000000;stroke-width:3;stroke-dasharray:none;stroke-opacity:1"
+       style="font-weight:bold;font-size:235.068px;font-family:Roboto;-inkscape-font-specification:'Roboto Bold';text-align:center;letter-spacing:4.89726px;writing-mode:lr-tb;direction:ltr;text-anchor:middle;display:none;fill:#1a1a1a;stroke:#000000;stroke-width:3;stroke-dasharray:none;stroke-opacity:1"
        x="510.13901"
        y="571.68524"
        id="text11"
        inkscape:label="nvAppnt-white-outline"><tspan
          sodipodi:role="line"
          id="tspan11"
-         x="0"
-         y="0"
+         x="510.13901"
+         y="571.68524"
          style="font-size:235.068px;letter-spacing:4.89726px;fill:#ececec;stroke:#000000;stroke-width:3;stroke-dasharray:none;stroke-opacity:1"><tspan
            style="font-size:244.864px;letter-spacing:4.89726px;fill:#f9f9f9;stroke:#000000;stroke-width:3;stroke-dasharray:none;stroke-opacity:1"
            id="tspan6">nv</tspan><tspan
