@@ -314,3 +314,9 @@ create_icon(192).resize((32, 32), Image.LANCZOS).save('icons/favicon-32.png')
 Requires `pip install Pillow` and the Roboto / Roboto Condensed font files installed on the system.
 
 In the end, I simply launched Inkscape and made a much better job by hand (see `icons\icon-nvAppnt.svg`).
+
+Later, I added the [UCI stripes](https://en.wikipedia.org/wiki/Rainbow_jersey) because I'm a cycling fan.
+
+![](icons/nvAppnt_banner.png)
+
+(aadm, August 2026)
