@@ -1,6 +1,6 @@
 # nvAppnt
 
-Barebones mobile-friendly web app (or [PWA](https://en.wikipedia.org/wiki/Progressive_web_app)) for browsing, searching and editing text notes stored in a GitHub repository.
+Barebones mobile-friendly web app (or [PWA](https://en.wikipedia.org/wiki/Progressive_web_app)) for browsing, searching and editing text notes stored in a GitHub repository. Content search index and image blobs are persisted locally via IndexedDB.
 
 Inspired by nvAlt and the lack of open-source alternatives, coded by aadm with MiMo V2.5 Free and Claude Sonnet 5 in OpenCode.
 
@@ -14,13 +14,13 @@ Launch it here: [`https://aadm.github.io/nvAppnt/`](`https://aadm.github.io/nvAp
 - [Mobile Usage](#mobile-usage)
 - [How It Works](#how-it-works)
 - [File Structure](#file-structure)
-- [Customization](#customization)
+- [Icon Generation](#icon-generation)
 
 ## Features
 
 - File browsing with folder navigation
 - Filename search (instant, client-side filtering)
-- Content search (searches inside note text, indexed client-side via Git blobs API)
+- Content search with persistent IndexedDB cache (survives app restarts)
 - Markdown rendering with image support (works with private repos via authenticated Git Blobs API)
 - LaTeX / MathJax rendering (`$...$` and `$$...$$` delimiters)
 - Basic editor with save (creates Git commits via GitHub API)
@@ -30,7 +30,6 @@ Launch it here: [`https://aadm.github.io/nvAppnt/`](`https://aadm.github.io/nvAp
 - Toggle size/date columns for compact view on small screens
 - Installable as a PWA on mobile and desktop
 - Works offline (static assets cached by service worker)
-- About dialog with app information
 
 ## Design Specifications
 
@@ -46,37 +45,37 @@ Launch it here: [`https://aadm.github.io/nvAppnt/`](`https://aadm.github.io/nvAp
 
 #### Dark Theme (default)
 
-| Token             | Value       | Usage                        |
-| ----------------- | ----------- | ---------------------------- |
-| `--bg`            | `#0d1117`   | Page background              |
-| `--bg-secondary`  | `#161b22`   | Cards, header, inputs        |
-| `--bg-tertiary`   | `#21262d`   | Hover states                 |
-| `--border`        | `#30363d`   | Borders, dividers            |
-| `--text`          | `#e6edf3`   | Primary text                 |
-| `--text-secondary`| `#8b949e`   | Secondary text, labels       |
-| `--accent`        | `#58a6ff`   | Links, active states, icons  |
-| `--accent-hover`  | `#79c0ff`   | Link hover                   |
-| `--accent-glow`   | `rgba(88,166,255,0.15)` | Focus rings, highlights |
-| `--danger`        | `#f85149`   | Errors, destructive actions  |
-| `--success`       | `#3fb950`   | Save button, confirmations   |
-| `--code-bg`       | `#161b22`   | Code blocks, inline code     |
+| Token | Value | Usage |
+| --- | --- | --- |
+| `--bg` | `#0d1117` | Page background |
+| `--bg-secondary` | `#161b22` | Cards, header, inputs |
+| `--bg-tertiary` | `#21262d` | Hover states |
+| `--border` | `#30363d` | Borders, dividers |
+| `--text` | `#e6edf3` | Primary text |
+| `--text-secondary` | `#8b949e` | Secondary text, labels |
+| `--accent` | `#58a6ff` | Links, active states, icons |
+| `--accent-hover` | `#79c0ff` | Link hover |
+| `--accent-glow` | `rgba(88,166,255,0.15)` | Focus rings, highlights |
+| `--danger` | `#f85149` | Errors, destructive actions |
+| `--success` | `#3fb950` | Save button, confirmations |
+| `--code-bg` | `#161b22` | Code blocks, inline code |
 
 #### Light Theme
 
-| Token             | Value       | Usage                        |
-| ----------------- | ----------- | ---------------------------- |
-| `--bg`            | `#eeeae2`   | Page background (warm gray)  |
-| `--bg-secondary`  | `#f7f5f0`   | Cards, header, inputs        |
-| `--bg-tertiary`   | `#e4e0d8`   | Hover states                 |
-| `--border`        | `#cdc8be`   | Borders, dividers            |
-| `--text`          | `#2c2920`   | Primary text                 |
-| `--text-secondary`| `#6b6560`   | Secondary text, labels       |
-| `--accent`        | `#0969da`   | Links, active states, icons  |
-| `--accent-hover`  | `#0550ae`   | Link hover                   |
-| `--accent-glow`   | `rgba(9,105,218,0.1)` | Focus rings, highlights |
-| `--danger`        | `#d1242f`   | Errors, destructive actions  |
-| `--success`       | `#1a7f37`   | Save button, confirmations   |
-| `--code-bg`       | `#ddd8ce`   | Code blocks, inline code     |
+| Token | Value | Usage |
+| --- | --- | --- |
+| `--bg` | `#eeeae2` | Page background (warm gray) |
+| `--bg-secondary` | `#f7f5f0` | Cards, header, inputs |
+| `--bg-tertiary` | `#e4e0d8` | Hover states |
+| `--border` | `#cdc8be` | Borders, dividers |
+| `--text` | `#2c2920` | Primary text |
+| `--text-secondary` | `#6b6560` | Secondary text, labels |
+| `--accent` | `#0969da` | Links, active states, icons |
+| `--accent-hover` | `#0550ae` | Link hover |
+| `--accent-glow` | `rgba(9,105,218,0.1)` | Focus rings, highlights |
+| `--danger` | `#d1242f` | Errors, destructive actions |
+| `--success` | `#1a7f37` | Save button, confirmations |
+| `--code-bg` | `#ddd8ce` | Code blocks, inline code |
 
 ### Spacing and Borders
 
@@ -129,14 +128,13 @@ gh repo create nvAppnt --public --source=. --push
 Then enable GitHub Pages:
 
 ```bash
-gh api repos/aadm/notes-viewer/pages -X PUT -f build_type=legacy -f source.branch=main -f source.path=/
+gh api repos/aadm/nvAppnt/pages -X PUT -f build_type=legacy -f source.branch=main -f source.path=/
 ```
 
-
-### 3. Run Locally (for development)
+### 3. Run Locally
 
 ```bash
-cd notes-viewer
+cd nvAppnt
 python3 -m http.server 8080
 # Open http://localhost:8080
 ```
@@ -165,18 +163,23 @@ If the old version still loads, the service worker cache may be stale. In that c
 2. Tap the Share button -> **"Remove from Home Screen"**
 3. Re-install via Share -> **"Add to Home Screen"**
 
-The service worker uses a versioned cache name (currently `notes-viewer-v2`). Bumping this version in `sw.js` forces a full cache wipe on the next activation, which is the cleanest way to guarantee users get fresh assets.
+The service worker uses a versioned cache name (currently `nvAppnt-v3`). Bumping this version in `sw.js` forces a full cache wipe on the next activation.
 
 ### What Gets Saved
 
 When you install and use the app, the following data is stored **locally in your browser** (never sent to any server except GitHub):
 
-- **GitHub token** - stored in `localStorage`, used only for GitHub API calls
+**localStorage (persists across sessions):**
+- **GitHub token** - used only for GitHub API calls
 - **Repository name and owner** - so you don't need to re-enter them
 - **Theme preference** (light/dark)
 - **Filter preferences** (show/hide dotfiles, folders, prefix toggle, columns toggle)
 
-The token persists across sessions. You only need to enter it once. If you clear browser data or use a different device, you'll need to re-enter it.
+**IndexedDB (persists across sessions):**
+- **Content search cache** - decoded text of all `.md`/`.markdown`/`.txt` files, keyed by blob sha
+- **Image blobs** - raw bytes of viewed images, keyed by blob sha
+
+The token persists across sessions. You only need to enter it once. If you clear browser data or use a different device, you'll need to re-enter it. IndexedDB data is also cleared when browser data is cleared.
 
 ### Offline Behavior
 
@@ -184,26 +187,37 @@ The token persists across sessions. You only need to enter it once. If you clear
 - The file tree is fetched fresh from GitHub each time you open the app
 - You need an internet connection to browse files, search, or edit
 - The app shell loads instantly from cache
+- Content search and images are served from IndexedDB after first load (no network needed)
 
 ## How It Works
 
 ### Architecture
 
 - **Single HTML file** (`index.html`) - all HTML, CSS, and JavaScript inline
+- **IndexedDB helper** (`idb.js`) - tiny wrapper for persistent key-value storage
 - **No build step** - vanilla JS, no frameworks, no npm
 - **GitHub API** - all data comes from GitHub's REST API
 - **PWA** - installable, cached static assets
 
+### IndexedDB Usage
+
+IndexedDB is used for two object stores (tables):
+
+- **`content`** - keyed by blob sha, stores decoded text content of `.md`/`.markdown`/`.txt` files. Populated on first content search, checked before network fetch on subsequent searches.
+- **`images`** - keyed by blob sha, stores raw `Uint8Array` bytes of image files. Populated when viewing a note with images, checked before network fetch on subsequent views.
+
+Both stores are cleared on logout. The database name is `nvAppnt` with version 1.
+
 ### API Calls
 
-| Operation           | Endpoint                                           | Notes                          |
-| ------------------- | -------------------------------------------------- | ------------------------------ |
-| Get repo info       | `GET /repos/{owner}/{repo}`                        | Gets default branch            |
-| Get file tree       | `GET /repos/{owner}/{repo}/git/trees/{branch}?recursive=1` | All files at once |
-| Get file content    | `GET /repos/{owner}/{repo}/contents/{path}`        | Returns base64 content         |
-| Save file           | `PUT /repos/{owner}/{repo}/contents/{path}`        | Creates a commit               |
-| Get commit history  | `GET /repos/{owner}/{repo}/commits?per_page=100`   | For "Updated" column           |
-| Get blob content    | `GET /repos/{owner}/{repo}/git/blobs/{sha}`        | Used for content search + image loading |
+| Operation | Endpoint | Notes |
+| --- | --- | --- |
+| Get repo info | `GET /repos/{owner}/{repo}` | Gets default branch |
+| Get file tree | `GET /repos/{owner}/{repo}/git/trees/{branch}?recursive=1` | All files at once |
+| Get file content | `GET /repos/{owner}/{repo}/contents/{path}` | Returns base64 content |
+| Save file | `PUT /repos/{owner}/{repo}/contents/{path}` | Creates a commit |
+| Get commit history | `GET /repos/{owner}/{repo}/commits?per_page=100` | For "Updated" column |
+| Get blob content | `GET /repos/{owner}/{repo}/git/blobs/{sha}` | Content search + image loading |
 
 ### Content Search
 
@@ -211,16 +225,18 @@ Content search does not use GitHub's `/search/code` endpoint (its index lags for
 
 **How the "indexing" works:**
 
-There is no database and nothing is written to disk. The "index" is a plain JavaScript object (`state.contentCache`) living in page memory, structured as:
+The content cache is stored in IndexedDB (browser-native database that persists on disk) and mirrored in memory for fast access:
 
 ```
 { [blobSha]: decodedTextContent }
 ```
 
 - Content is cached keyed by the blob's Git **sha** (a hash of the content itself). This means cache invalidation is automatic: editing a file changes its sha, so the old entry is never looked up again and the new sha triggers a fresh fetch on the next search.
-- The first content search after opening the app triggers an indexing pass: all text files are fetched in parallel (8 at a time), decoded, and cached. A progress indicator shows while this runs. Subsequent searches are instant since everything is already in memory.
+- The first content search after opening the app triggers an indexing pass: all text files are fetched in parallel (8 at a time), decoded, and stored in IndexedDB + in-memory cache. A progress indicator shows while this runs.
+- Subsequent searches are instant since everything is already in memory.
+- After app restart: in-memory cache is empty, but IndexedDB has the data. First search populates in-memory cache from IndexedDB (instant), then checks if any new files need fetching.
 - Matches show a highlighted snippet of surrounding text for context.
-- The cache is cleared on logout. Closing the tab or reloading the page also wipes it (nothing persists to `localStorage` or `IndexedDB`).
+- The cache is cleared on logout.
 
 ### Image Resolution
 
@@ -230,7 +246,7 @@ Instead, relative image paths are resolved against the file's directory to a rep
 
 1. The markdown renderer emits `<img data-gh-path="{repo-relative-path}" class="img-loading">` as a placeholder. A dashed border placeholder is shown while loading.
 2. After the HTML is inserted into the DOM, `resolveGithubImages()` scans for these placeholders, fetches each blob's base64 content, decodes it into a `Blob`, creates an object URL via `URL.createObjectURL()`, and swaps it into the `<img>` src.
-3. Object URLs are cached in memory keyed by blob sha, so the same image isn't re-fetched when switching between notes. The cache is cleaned up (`URL.revokeObjectURL`) on logout to avoid memory leaks.
+3. Raw image bytes are persisted in IndexedDB so previously viewed images load instantly without re-fetching.
 4. If an image path doesn't match any file in the repo, a dashed placeholder with "Image not found: {path}" is shown instead of a broken browser icon.
 
 Absolute `http(s)://` and `data:` image URLs are left untouched and rendered directly (no auth needed for external images).
@@ -245,13 +261,14 @@ All state is in a single `state` object. Key fields:
 - `hidePrefix` - hides numerical filename prefixes (e.g., `202608051608_`) for cleaner display
 - `hideMetadata` - hides Size and Updated columns for compact view on small screens
 - `searchMode` - `filename` or `content`, toggled via the search box button
-- `contentCache` - map of blob sha to decoded file content, used for content search indexing (in-memory only, cleared on logout)
+- `contentCache` - map of blob sha to decoded file content, persisted to IndexedDB
 
 ## File Structure
 
 ```
 nvAppnt/
   index.html           # Main app (all HTML/CSS/JS in one file)
+  idb.js               # IndexedDB helper module
   manifest.json        # PWA manifest
   sw.js                # Service worker for offline caching
   icons/
@@ -271,9 +288,7 @@ The browser tab uses the Material Symbols "script" icon as an SVG favicon. Downl
 
 ## Icon Generation
 
-A first attempt to generate programmatically the icon with Python and Pillow resulted in a mediocre result (check `icons\icon-512_old.png`).
-
-I had the following idea in mind: super simple, white "nvAppnt" text with "nv" in Roboto Bold and "Appnt" in Roboto Condensed, giving the two parts of the name distinct visual weight. The following is the code using Pillow. 
+The app icon is generated programmatically with Python and Pillow. The design is white "nvAppnt" text with "nv" in Roboto Bold and "Appnt" in Roboto Condensed, giving the two parts of the name distinct visual weight.
 
 ```python
 from PIL import Image, ImageDraw, ImageFont
@@ -312,11 +327,5 @@ create_icon(192).resize((32, 32), Image.LANCZOS).save('icons/favicon-32.png')
 ```
 
 Requires `pip install Pillow` and the Roboto / Roboto Condensed font files installed on the system.
-
-In the end, I simply launched Inkscape and made a much better job by hand (see `icons\icon-nvAppnt.svg`).
-
-Later, I added the [UCI stripes](https://en.wikipedia.org/wiki/Rainbow_jersey) because I'm a cycling fan.
-
-![](icons/nvAppnt_banner.png)
 
 (aadm, August 2026)

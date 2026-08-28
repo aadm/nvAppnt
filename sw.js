@@ -1,7 +1,8 @@
-const CACHE_NAME = 'notes-viewer-v2';
+const CACHE_NAME = 'nvAppnt-v3';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
+  '/idb.js',
   '/manifest.json',
   'https://cdn.jsdelivr.net/npm/marked/marked.min.js'
 ];

@@ -23,6 +23,7 @@
     };
   </script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script src="idb.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -1007,6 +1008,7 @@
       if (!confirm('Disconnect from GitHub?')) return;
       localStorage.removeItem('notes-viewer-state');
       clearImageBlobCache();
+      idbClear('content').catch(() => {});
       state = { ...state, token: '', owner: '', repo: '', tree: [], browsePath: '', currentPath: '', contentCache: {} };
       showView('login-view');
     }
@@ -1032,7 +1034,7 @@
       overlay.innerHTML = `
         <div class="modal">
           <h2>nvAppnt</h2>
-          <p><strong>Version:</strong> 1.2.0</p>
+          <p><strong>Version:</strong> 1.3.0</p>
           <p>Barebones mobile-friendly web app for browsing, searching and editing text notes stored in a GitHub repository.</p>
           <p>Inspired by nvAlt and the lack of open-source alternatives, coded by aadm with MiMo V2.5 Free and Claude Sonnet 5 in OpenCode.</p>
           <p><strong>How it works:</strong> Connects to GitHub via a Personal Access Token. Your token is stored locally in your browser and never sent anywhere except to GitHub's API.</p>
@@ -1309,6 +1311,16 @@
 
     async function fetchImageBlobUrl(sha, mime) {
       if (imageBlobCache[sha]) return imageBlobCache[sha];
+      // Try IndexedDB first
+      try {
+        const cached = await idbGet('images', sha);
+        if (cached) {
+          const blob = new Blob([cached], { type: mime });
+          const url = URL.createObjectURL(blob);
+          imageBlobCache[sha] = url;
+          return url;
+        }
+      } catch (e) { /* fall through to network */ }
       const data = await api(`/repos/${state.owner}/${state.repo}/git/blobs/${sha}`);
       const binary = atob(data.content.replace(/\n/g, ''));
       const bytes = new Uint8Array(binary.length);
@@ -1316,6 +1328,8 @@
       const blob = new Blob([bytes], { type: mime });
       const url = URL.createObjectURL(blob);
       imageBlobCache[sha] = url;
+      // Persist raw bytes to IndexedDB (fire and forget)
+      idbSet('images', sha, bytes).catch(() => {});
       return url;
     }
 
@@ -1324,6 +1338,7 @@
         try { URL.revokeObjectURL(url); } catch (e) { /* ignore */ }
       }
       for (const key of Object.keys(imageBlobCache)) delete imageBlobCache[key];
+      idbClear('images').catch(() => {});
     }
 
     async function resolveGithubImages(container) {
@@ -1512,10 +1527,19 @@
     // Content search: fetches and caches raw blob content for text files, then
     // searches client-side. Cache is keyed by blob sha, so it stays valid across
     // tree refreshes and only re-fetches files whose content actually changed.
+    // Content is persisted to IndexedDB so it survives tab kills / app restarts.
     const CONTENT_SEARCH_EXT = /\.(md|markdown|txt)$/i;
 
     async function fetchBlobContent(sha) {
       if (state.contentCache[sha] !== undefined) return state.contentCache[sha];
+      // Try IndexedDB first
+      try {
+        const cached = await idbGet('content', sha);
+        if (cached !== undefined) {
+          state.contentCache[sha] = cached;
+          return cached;
+        }
+      } catch (e) { /* fall through to network */ }
       const data = await api(`/repos/${state.owner}/${state.repo}/git/blobs/${sha}`);
       let content = '';
       try {
@@ -1528,6 +1552,8 @@
         content = '';
       }
       state.contentCache[sha] = content;
+      // Persist to IndexedDB (fire and forget)
+      idbSet('content', sha, content).catch(() => {});
       return content;
     }
 
