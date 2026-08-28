@@ -4,7 +4,7 @@ Barebones mobile-friendly web app (or [PWA](https://en.wikipedia.org/wiki/Progre
 
 Inspired by nvAlt and the lack of open-source alternatives, coded by aadm with MiMo V2.5 Free and Claude Sonnet 5 in OpenCode.
 
-Launch it here: [`https://aadm.github.io/nvAppnt/`](`https://aadm.github.io/nvAppnt/`)
+Launch it here: [https://aadm.github.io/nvAppnt/](https://aadm.github.io/nvAppnt/)
 
 ## Table of Contents
 
