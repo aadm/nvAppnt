@@ -288,7 +288,11 @@ The browser tab uses the Material Symbols "script" icon as an SVG favicon. Downl
 
 ## Icon Generation
 
-The app icon is generated programmatically with Python and Pillow. The design is white "nvAppnt" text with "nv" in Roboto Bold and "Appnt" in Roboto Condensed, giving the two parts of the name distinct visual weight.
+
+I had the following idea in mind: super simple, white "nvAppnt" text with "nv" in Roboto Bold and "Appnt" in Roboto Condensed,
+giving the two parts of the name distinct visual weight.
+
+The following is the code used to generate the icon with Python and Pillow:
 
 ```python
 from PIL import Image, ImageDraw, ImageFont
@@ -326,11 +330,8 @@ create_icon(512).save('icons/icon-512.png')
 create_icon(192).resize((32, 32), Image.LANCZOS).save('icons/favicon-32.png')
 ```
 
-Requires `pip install Pillow` and the Roboto / Roboto Condensed font files installed on the system.
-
-In the end, I simply launched Inkscape and made a much better job by hand (see `icons\icon-nvAppnt.svg`).
-
-Later, I added the [UCI stripes](https://en.wikipedia.org/wiki/Rainbow_jersey) because I'm a cycling fan.
+However I did not like the result so I launched Inkscape, played a bit with spacing and text placement,
+then I added the [UCI stripes](https://en.wikipedia.org/wiki/Rainbow_jersey) because I'm a cycling fan.
 
 ![](icons/nvAppnt_banner.png)
 
