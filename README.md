@@ -2,7 +2,7 @@
 
 Barebones mobile-friendly web app (or [PWA](https://en.wikipedia.org/wiki/Progressive_web_app)) for browsing, searching and editing text notes stored in a GitHub repository. Content search index and image blobs are persisted locally via IndexedDB.
 
-Inspired by nvAlt and the lack of open-source alternatives, coded by aadm with MiMo V2.5 Free and Claude Sonnet 5 in OpenCode.
+Inspired by [nvAlt](https://en.wikipedia.org/wiki/Notational_Velocity) and the lack of open-source alternatives, coded by aadm with MiMo V2.5 Free and Claude Sonnet 5 in OpenCode.
 
 Launch it here: [https://aadm.github.io/nvAppnt/](https://aadm.github.io/nvAppnt/)
 
