@@ -281,9 +281,7 @@ nvAppnt/
 
 ## Favicon
 
-The browser tab uses the Material Symbols "script" icon as an SVG favicon. Downloaded here:
-
-<https://fonts.google.com/icons?selected=Material+Symbols+Outlined:script:FILL@0;wght@400;GRAD@0;opsz@40&icon.query=text&icon.size=32&icon.color=%231f1f1f>
+Favicon (used by browsers like Chrome, Firefox etc) is the Google Material Symbols `edit_note` icon.
 
 
 ## Icon Generation
